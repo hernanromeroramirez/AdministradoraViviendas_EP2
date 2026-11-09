@@ -232,7 +232,12 @@ public class MainController {
 
             // Incorporar vivienda a la tabla
             viviendas.add(nuevaVivienda);
-            guardarViviendas();
+
+            // Guardar los cambios
+            if (!guardarViviendas()) {
+                viviendas.remove(nuevaVivienda);
+                return;
+            }
 
             lblMensaje.setText(
                     "Vivienda " + codigo + " registrada correctamente.");
@@ -277,8 +282,17 @@ public class MainController {
             return;
         }
 
+        // Guardar la posición original
+        int indice = viviendas.indexOf(seleccionada);
+
+        // Eliminar de la tabla
         viviendas.remove(seleccionada);
-        guardarViviendas();
+
+        // Guardar los cambios
+        if (!guardarViviendas()) {
+            viviendas.add(indice, seleccionada);
+            return;
+        }
 
         lblMensaje.setText(
                 "Vivienda eliminada correctamente.");
@@ -308,7 +322,7 @@ public class MainController {
         }
     }
 
-    private void guardarViviendas() {
+    private boolean guardarViviendas() {
 
         try {
             List<Departamento> departamentos = new ArrayList<>();
@@ -327,11 +341,15 @@ public class MainController {
             repositorio.guardarDepartamentos(departamentos);
             repositorio.guardarCasas(casas);
 
+            return true;
+
         } catch (IOException e) {
 
             lblMensaje.setText(
                     "Error al guardar los archivos JSON: "
                             + e.getMessage());
+
+            return false;
         }
     }
 }
