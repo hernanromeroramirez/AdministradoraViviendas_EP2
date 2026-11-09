@@ -8,7 +8,8 @@
 
 <BorderPane prefHeight="700.0" prefWidth="1000.0"
             xmlns="http://javafx.com/javafx/21"
-            xmlns:fx="http://javafx.com/fxml/1">
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="cl.duoc.viviendas.controller.MainController">
 
     <top>
         <VBox prefHeight="85.0" spacing="8.0"
@@ -70,13 +71,21 @@
                                 <TextField fx:id="txtHabitaciones" promptText="Ej: 3"
                                            GridPane.columnIndex="1" GridPane.rowIndex="3"/>
 
-                                <Label text="Piso" GridPane.rowIndex="4"/>
+
+                                <!-- Datos exclusivos de Departamento -->
+                                <Label fx:id="lblPiso" text="Piso" GridPane.rowIndex="4"
+                                       visible="false" managed="false"/>
+
                                 <TextField fx:id="txtPiso" promptText="Ej: 8"
-                                           GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                                           GridPane.columnIndex="1" GridPane.rowIndex="4"
+                                           visible="false" managed="false"/>
 
-                                <Label text="Gastos comunes pagados" GridPane.rowIndex="5"/>
+                                <Label fx:id="lblGastosComunes" text="Gastos comunes pagados"
+                                       GridPane.rowIndex="5" visible="false" managed="false"/>
+
                                 <ComboBox fx:id="cmbGastosComunes" prefWidth="220"
-                                          GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                          GridPane.columnIndex="1" GridPane.rowIndex="5"
+                                          visible="false" managed="false">
                                     <items>
                                         <FXCollections fx:factory="observableArrayList">
                                             <String fx:value="Sí"/>
@@ -84,10 +93,12 @@
                                         </FXCollections>
                                     </items>
                                 </ComboBox>
+                                <Label fx:id="lblEstacionamiento" text="Estacionamiento asignado"
+                                       GridPane.rowIndex="6" visible="false" managed="false"/>
 
-                                <Label text="Estacionamiento asignado" GridPane.rowIndex="6"/>
                                 <ComboBox fx:id="cmbEstacionamiento" prefWidth="220"
-                                          GridPane.columnIndex="1" GridPane.rowIndex="6">
+                                          GridPane.columnIndex="1" GridPane.rowIndex="6"
+                                          visible="false" managed="false">
                                     <items>
                                         <FXCollections fx:factory="observableArrayList">
                                             <String fx:value="Sí"/>
@@ -96,9 +107,13 @@
                                     </items>
                                 </ComboBox>
 
-                                <Label text="¿Tiene patio?" GridPane.rowIndex="7"/>
+                                <!-- Dato exclusivo de Casa -->
+                                <Label fx:id="lblPatio" text="¿Tiene patio?"
+                                       GridPane.rowIndex="7" visible="false" managed="false"/>
+
                                 <ComboBox fx:id="cmbPatio" prefWidth="220"
-                                          GridPane.columnIndex="1" GridPane.rowIndex="7">
+                                          GridPane.columnIndex="1" GridPane.rowIndex="7"
+                                          visible="false" managed="false">
                                     <items>
                                         <FXCollections fx:factory="observableArrayList">
                                             <String fx:value="Sí"/>
