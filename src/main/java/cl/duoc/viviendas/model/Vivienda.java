@@ -39,8 +39,10 @@ public abstract class Vivienda {
     }
 
     public void setSuperficie(double superficie) {
-        if (superficie < 20 || superficie > 500) {
-            throw new IllegalArgumentException("La superficie debe estar entre 20 y 500 metros cuadrados.");
+        if (!Double.isFinite(superficie) || superficie < 20 || superficie > 500) {
+            throw new IllegalArgumentException(
+                    "La superficie debe ser un número entre 20 y 500 metros cuadrados."
+            );
         }
         this.superficie = superficie;
     }

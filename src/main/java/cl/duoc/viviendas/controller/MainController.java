@@ -18,6 +18,12 @@ import javafx.beans.property.SimpleStringProperty;
 import java.text.NumberFormat;
 import java.util.Locale;
 
+import cl.duoc.viviendas.repository.ViviendaRepository;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainController {
 
     // Tipo de vivienda
@@ -62,6 +68,9 @@ public class MainController {
     private final ObservableList<Vivienda> viviendas =
             FXCollections.observableArrayList();
 
+    private final ViviendaRepository repositorio =
+            new ViviendaRepository();
+
     @FXML
     private void initialize() {
 
@@ -82,8 +91,7 @@ public class MainController {
         btnEliminar.setOnAction(event -> eliminarVivienda());
 
         actualizarFormulario();
-
-        lblMensaje.setText("Sistema listo.");
+        cargarViviendas();
     }
 
     private void configurarTabla() {
@@ -159,11 +167,16 @@ public class MainController {
             // Leer datos generales
             String codigo = txtCodigo.getText().trim();
 
-            double superficie = Double.parseDouble(
-                    txtSuperficie.getText().trim().replace(",", "."));
+            for (Vivienda vivienda : viviendas) {
+                if (vivienda.getCodigo().equalsIgnoreCase(codigo)) {
+                    throw new IllegalArgumentException(
+                            "Ya existe una vivienda registrada con el código " + codigo + "."
+                    );
+                }
+            }
 
-            int habitaciones = Integer.parseInt(
-                    txtHabitaciones.getText().trim());
+            double superficie = Double.parseDouble(txtSuperficie.getText().trim().replace(",", "."));
+            int habitaciones = Integer.parseInt(txtHabitaciones.getText().trim());
 
             Vivienda nuevaVivienda;
 
@@ -219,6 +232,7 @@ public class MainController {
 
             // Incorporar vivienda a la tabla
             viviendas.add(nuevaVivienda);
+            guardarViviendas();
 
             lblMensaje.setText(
                     "Vivienda " + codigo + " registrada correctamente.");
@@ -264,8 +278,60 @@ public class MainController {
         }
 
         viviendas.remove(seleccionada);
+        guardarViviendas();
 
         lblMensaje.setText(
                 "Vivienda eliminada correctamente.");
+    }
+
+    private void cargarViviendas() {
+
+        try {
+            List<Departamento> departamentos =
+                    repositorio.cargarDepartamentos();
+
+            List<Casa> casas =
+                    repositorio.cargarCasas();
+
+            viviendas.clear();
+            viviendas.addAll(departamentos);
+            viviendas.addAll(casas);
+
+            lblMensaje.setText(
+                    "Viviendas cargadas correctamente.");
+
+        } catch (IOException e) {
+
+            lblMensaje.setText(
+                    "Error al cargar los archivos JSON: "
+                            + e.getMessage());
+        }
+    }
+
+    private void guardarViviendas() {
+
+        try {
+            List<Departamento> departamentos = new ArrayList<>();
+            List<Casa> casas = new ArrayList<>();
+
+            for (Vivienda vivienda : viviendas) {
+
+                if (vivienda instanceof Departamento) {
+                    departamentos.add((Departamento) vivienda);
+
+                } else if (vivienda instanceof Casa) {
+                    casas.add((Casa) vivienda);
+                }
+            }
+
+            repositorio.guardarDepartamentos(departamentos);
+            repositorio.guardarCasas(casas);
+
+        } catch (IOException e) {
+
+            lblMensaje.setText(
+                    "Error al guardar los archivos JSON: "
+                            + e.getMessage());
+        }
     }
 }
